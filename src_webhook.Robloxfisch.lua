@@ -25,7 +25,6 @@ local function getPlayerData()
     local equippedRod = character and character:FindFirstChildOfClass("Tool")
     if equippedRod and string.find(equippedRod.Name:lower(), "rod") then
         table.insert(fishingRods, "`" .. equippedRod.Name .. "` (🎣 กำลังใช้อยู่)")
-        print("✅ พบเบ็ดที่ใช้อยู่: " .. equippedRod.Name)
     end
 
     local backpack = player:FindFirstChild("Backpack")
@@ -33,23 +32,17 @@ local function getPlayerData()
         for _, item in ipairs(backpack:GetChildren()) do
             if item:IsA("Tool") and string.find(item.Name:lower(), "rod") then
                 table.insert(fishingRods, "`" .. item.Name .. "` (🎒 Backpack)")
-                print("✅ พบเบ็ดใน Backpack: " .. item.Name)
             end
         end
     end
 
     local equipmentBag = player:FindFirstChild("EquipmentBag") 
     if equipmentBag then
-        print("🛍 EquipmentBag พบแล้ว! กำลังค้นหาเบ็ด...")
-
         for _, item in ipairs(equipmentBag:GetChildren()) do
             if item:IsA("Tool") and string.find(item.Name:lower(), "rod") then
                 table.insert(fishingRods, "`" .. item.Name .. "` (📦 Equipment Bag)")
-                print("✅ พบเบ็ดใน Equipment Bag: " .. item.Name)
             end
         end
-    else
-        print("❌ EquipmentBag ไม่พบ ลองตรวจสอบโครงสร้างเกมอีกครั้ง")
     end
 
     local rodsText = #fishingRods > 0 and table.concat(fishingRods, ", ") or "❌ ไม่มีเบ็ดตกปลา"
@@ -61,10 +54,10 @@ local function getPlayerData()
         money = money,
         position = position,
         rods = rodsText,
-        exoticFish = exoticFishText,
         avatar = avatarUrl
     }
 end
+
 local function sendWebhook()
     local data = getPlayerData()
     local message = {
@@ -77,7 +70,7 @@ local function sendWebhook()
                 {name = "📈 **เลเวล**", value = "`" .. tostring(data.level) .. "`", inline = true},
                 {name = "💰 **เงินที่มี**", value = "`" .. tostring(data.money) .. " C$`", inline = true},
                 {name = "📍 **ตำแหน่งที่ตกปลา**", value = data.position, inline = false},
-                {name = "🎣 **เบ็ดตกปลาที่ใช้**", value = data.rods, inline = false},
+                {name = "🎣 **เบ็ดตกปลาที่มี**", value = data.rods, inline = false},
             },
             thumbnail = {url = data.avatar},
             footer = {text = "📅 ข้อมูลอัปเดตเมื่อ: " .. os.date("%Y-%m-%d %X"), icon_url = "https://cdn-icons-png.flaticon.com/512/1804/1804945.png"}
