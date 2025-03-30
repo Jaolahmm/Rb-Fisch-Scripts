@@ -12,8 +12,8 @@ local function getPlayerData()
     local player = game.Players.LocalPlayer
     local leaderstats = player:FindFirstChild("leaderstats")  
     local level = leaderstats and leaderstats:FindFirstChild("Level") and leaderstats.Level.Value or "❌ ไม่พบ Level"
-    local moneyC = leaderstats and leaderstats:FindFirstChild("C$") and leaderstats["C$"].Value or "❌ ไม่พบ C$"
-    local moneyE = leaderstats and leaderstats:FindFirstChild("E$") and leaderstats["E$"].Value or "❌ ไม่พบ E$"
+    local moneyC = leaderstats and leaderstats:FindFirstChild("C$") and leaderstats["C$"].Value or "❌ ไม่พบ C$ หรือ อยู่โลก 2"
+    local moneyE = leaderstats and leaderstats:FindFirstChild("E$") and leaderstats["E$"].Value or "❌ ไม่พบ E$ หรือ อยู่โลก 1"
     local character = player.Character
     local position = "❌ ไม่พบตำแหน่ง"
 
