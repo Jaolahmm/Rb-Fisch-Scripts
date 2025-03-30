@@ -12,7 +12,8 @@ local function getPlayerData()
     local player = game.Players.LocalPlayer
     local leaderstats = player:FindFirstChild("leaderstats")  
     local level = leaderstats and leaderstats:FindFirstChild("Level") and leaderstats.Level.Value or "❌ ไม่พบ Level"
-    local money = leaderstats and leaderstats:FindFirstChild("C$") and leaderstats["C$"].Value or "❌ ไม่พบ C$"
+    local moneyC = leaderstats and leaderstats:FindFirstChild("C$") and leaderstats["C$"].Value or "❌ ไม่พบ C$"
+    local moneyE = leaderstats and leaderstats:FindFirstChild("E$") and leaderstats["E$"].Value or "❌ ไม่พบ E$"
     local character = player.Character
     local position = "❌ ไม่พบตำแหน่ง"
 
@@ -51,7 +52,8 @@ local function getPlayerData()
     return {
         name = player.Name,
         level = level,
-        money = money,
+        moneyC = moneyC,
+        moneyE = moneyE,
         position = position,
         rods = rodsText,
         avatar = avatarUrl
@@ -59,6 +61,11 @@ local function getPlayerData()
 end
 
 local function sendWebhook()
+    if webhookURL == "" then
+        warn("❌ ไม่พบ Webhook URL! โปรดตั้งค่าให้ถูกต้อง")
+        return
+    end
+
     local data = getPlayerData()
     local message = {
         embeds = {{
@@ -66,14 +73,15 @@ local function sendWebhook()
             color = 3447003,
             description = "ข้อมูลผู้เล่นล่าสุดที่ตกปลาอยู่ในเกม **Fisch**",
             fields = {
-                {name = "👤 **ชื่อผู้เล่น**", value = "`" .. data.name .. "`", inline = true},
-                {name = "📈 **เลเวล**", value = "`" .. tostring(data.level) .. "`", inline = true},
-                {name = "💰 **เงินที่มี**", value = "`" .. tostring(data.money) .. " C$`", inline = true},
-                {name = "📍 **ตำแหน่งที่ตกปลา**", value = data.position, inline = false},
-                {name = "🎣 **เบ็ดตกปลาที่มี**", value = data.rods, inline = false},
+                { name = "👤 **ชื่อผู้เล่น**", value = "`" .. data.name .. "`", inline = true },
+                { name = "📈 **เลเวล**", value = "`" .. tostring(data.level) .. "`", inline = true },
+                { name = "💰 **เงิน C$ ที่มี**", value = "`" .. tostring(data.moneyC) .. " C$`", inline = true },
+                { name = "💵 **เงิน E$ ที่มี**", value = "`" .. tostring(data.moneyE) .. " E$`", inline = true },
+                { name = "📍 **ตำแหน่งที่ตกปลา**", value = data.position, inline = false },
+                { name = "🎣 **เบ็ดตกปลาที่มี**", value = data.rods, inline = false },
             },
-            thumbnail = {url = data.avatar},
-            footer = {text = "📅 ข้อมูลอัปเดตเมื่อ: " .. os.date("%Y-%m-%d %X"), icon_url = "https://cdn-icons-png.flaticon.com/512/1804/1804945.png"}
+            thumbnail = { url = data.avatar },
+            footer = { text = "📅 ข้อมูลอัปเดตเมื่อ: " .. os.date("%Y-%m-%d %X"), icon_url = "https://cdn-icons-png.flaticon.com/512/1804/1804945.png" }
         }},
         username = "🐟 Fisch Webhook Bot"
     }
@@ -81,7 +89,7 @@ local function sendWebhook()
     local response = request({
         Url = webhookURL,
         Method = "POST",
-        Headers = {["Content-Type"] = "application/json"},
+        Headers = { ["Content-Type"] = "application/json" },
         Body = game:GetService("HttpService"):JSONEncode(message)
     })
 
@@ -94,5 +102,5 @@ end
 
 while true do
     sendWebhook()
-    wait(15)
+    wait(math.random(15, 30)) -- ป้องกันการโดนแบนจาก Webhook
 end
